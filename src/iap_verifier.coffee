@@ -119,7 +119,7 @@ class IAPVerifier
   verify: (data, receipt, options, cb) ->
     if @debug then console.log("verify!")
     
-    if @preencodedReceipt
+    if !@preencodedReceipt
       buffer = new Buffer(receipt)
       encoded = buffer.toString('base64')
       data['receipt-data'] = encoded
