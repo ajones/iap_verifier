@@ -46,11 +46,12 @@ class IAPVerifier
     21007: { message:"Sandbox receipt sent to Production environment", valid: false, error: true, redirect: true } # special case for app review handling - forward any request that is intended for the Sandbox but was sent to Production, this is what the app review team does
     21008: { message:"Production receipt sent to Sandbox environment", valid: false, error: true }    
   
-  constructor: (@password, @production=true, @debug=false) ->    
+  constructor: (@password, @production=true, @preencoded=false, @debug=false) ->    
     @host = if @production then @productionHost else @sandboxHost          
     @port = 443
     @path = '/verifyReceipt'
     @method = 'POST'
+    @preencodedReceipt = @preencoded
   
   ###
     verifyAutoRenewReceipt
@@ -118,10 +119,13 @@ class IAPVerifier
   verify: (data, receipt, options, cb) ->
     if @debug then console.log("verify!")
     
-    buffer = new Buffer(receipt)
-    encoded = buffer.toString('base64')
-        
-    data['receipt-data'] = encoded
+    if @preencodedReceipt
+      buffer = new Buffer(receipt)
+      encoded = buffer.toString('base64')
+      data['receipt-data'] = encoded
+    else 
+      data['receipt-data'] = receipt
+    
     post_data = JSON.stringify(data)
         
     options.headers = {
