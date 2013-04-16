@@ -18,7 +18,16 @@ There are two environments for Apple's verification servers SandBox and Producti
   
 When instantiating the verifier you need to provide the itunes shared secret for the application you are verifying receipts for.  This can be found on the itunes connect page for the applications' in app purchases.
   
-The IAPVerifier API is very simple, create an instance of IAPVerifier and then call verifyReceipt on it with a callback.  The first argument is the receipt data string, the second is a boolean indicating whether or not the receipt data is encoded as base64 already or not the last argument is the callback which includes three parameters.
+The IAPVerifier API is very simple, create an instance of IAPVerifier and then call verifyReceipt on it with a callback.  
+
+The constructor can take up to 4 arguments
+IAPVerifier(password, production, preencoded, debug)
+* password - itunes shared secret
+* production - is this talking to sandbox or production servers
+* preencoded - are the receipts already base64 encoded 
+* debug - show log messages of verification process
+
+The first argument in a verify is the receipt data string, the second is a callback which includes three parameters.
 
     verifyReceipt(rawReceipt, function(isValid, message, data){
       // do something with the verification info...      
